@@ -179,12 +179,12 @@ function checkReminders(){
 }
 $("#csv").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{const count=importCsv(await file.text());alert(count+" new transaction"+(count===1?"":"s")+" imported and categorized.");monthInput.value=today.toISOString().slice(0,7);render()}catch(err){alert(err.message)}e.target.value=""});
 monthInput.addEventListener("change",render);
-function openIncome(){const d=new Date();$("#income-date").value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")).join("-");$("#income-dialog").showModal()}
+function openIncome(){const d=new Date();$("#income-date").value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");$("#income-dialog").showModal()}
 $("#add-income").addEventListener("click",openIncome);
 $("#income-shortcut").addEventListener("click",openIncome);
 $("#cancel-income").addEventListener("click",()=>$("#income-dialog").close());
 $("#income-form").addEventListener("submit",e=>{e.preventDefault();state.transactions.push({id:crypto.randomUUID(),date:$("#income-date").value,name:$("#income-source").value.trim(),description:"Manually added",amount:Number($("#income-amount").value),category:"Income"});e.target.reset();$("#income-dialog").close();save()});
-$("#add-bill").addEventListener("click",()=>{const d=new Date();$("#bill-date").value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")).join("-");$("#bill-dialog").showModal()});
+$("#add-bill").addEventListener("click",()=>{const d=new Date();$("#bill-date").value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");$("#bill-dialog").showModal()});
 $("#cancel-bill").addEventListener("click",()=>$("#bill-dialog").close());
 $("#bill-form").addEventListener("submit",e=>{e.preventDefault();state.bills.push({id:crypto.randomUUID(),name:$("#bill-name").value.trim(),amount:Number($("#bill-amount").value),dueDate:$("#bill-date").value,repeatMonthly:$("#bill-repeat").checked});e.target.reset();$("#bill-dialog").close();save()});
 $("#enable-notifications").addEventListener("click",async()=>{if(!("Notification"in window)){alert("Notifications are not supported in this browser. Your upcoming bills will still appear here.");return}const result=await Notification.requestPermission();if(result==="granted"){alert("Reminders enabled. Open the app regularly to check upcoming bills.");renderBills()}else alert("Notifications were not enabled. Upcoming bills remain visible in the app.")});
