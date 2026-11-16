@@ -1,6 +1,6 @@
 {
   "id": "./",
-  "name": "Smart Budget Budget",
+  "name": "Smart Budget",
   "short_name": "Smart Budget",
   "description": "A simple, private monthly money dashboard.",
   "start_url": "./",
