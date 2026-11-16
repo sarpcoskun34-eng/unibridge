@@ -137,7 +137,7 @@ function renderBills(){
  checkReminders();
 }
 function checkReminders(){
- if(Notification.permission!=="granted")return;
+ if(!("Notification" in window)||Notification.permission!=="granted")return;
  const todayKey=new Date().toISOString().slice(0,10);
  state.bills.forEach(b=>{const d=nextDue(Number(b.day));const days=Math.ceil((d-new Date(new Date().toDateString()))/86400000);const key="spendwise-reminder-"+b.name+"-"+d.toISOString().slice(0,10);if(days>=0&&days<=3&&!localStorage.getItem(key)){new Notification("Upcoming payment",{body:b.name+" · "+euro(b.amount)+(days===0?" due today":days===1?" due tomorrow":" due in "+days+" days")});localStorage.setItem(key,todayKey)}});
 }
