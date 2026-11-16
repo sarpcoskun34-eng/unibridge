@@ -42,6 +42,7 @@ dialog{width:min(450px,calc(100% - 28px));border:1px solid var(--line);border-ra
 
 <dialog id="bill-dialog"><form id="bill-form"><h2>Add a recurring payment</h2><p>Enter a bill you want to keep an eye on. Smart Budget can remind you as the due date approaches.</p><div class="field"><label for="bill-name">Payment name</label><input id="bill-name" required placeholder="e.g. Phone plan"></div><div class="field"><label for="bill-amount">Amount (€)</label><input id="bill-amount" required type="number" min="0.01" step="0.01" placeholder="19.99"></div><div class="field"><label for="bill-day">Due day each month</label><input id="bill-day" required type="number" min="1" max="31" value="1"></div><div class="modal-actions"><button type="button" class="btn alt" id="cancel-bill">Cancel</button><button class="btn">Save bill</button></div></form></dialog>
 
+<dialog id="account-dialog"><form id="account-form"><h2 id="account-title">Create your account</h2><p id="account-description">Sign up with your email to create an account.</p><div class="field"><label for="account-email">Email</label><input id="account-email" type="email" autocomplete="email" required placeholder="you@example.com"></div><div class="field"><label for="account-password">Password</label><input id="account-password" type="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></div><p id="account-status" aria-live="polite"></p><div class="modal-actions"><button type="button" class="btn alt" id="account-cancel">Close</button><button type="submit" class="btn" id="account-submit">Create account</button></div><button type="button" class="linkbtn" id="account-switch">Already have an account? Sign in</button></form></dialog>
 <script>
 const KEY="smartbudget-v1";
 const initial=()=>({transactions:[],bills:[]});
@@ -150,6 +151,64 @@ $("#enable-notifications").addEventListener("click",async()=>{if(!("Notification
 $("#clear-month").addEventListener("click",()=>{const selected=monthInput.value;if(!confirm("Remove imported transactions for "+selected+" from this device?"))return;state.transactions=state.transactions.filter(t=>t.date?.slice(0,7)!==selected);save()});
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 render();
+</script>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const SUPABASE_URL = "ADD_SUPABASE_PROJECT_URL";
+const SUPABASE_PUBLISHABLE_KEY = "ADD_SUPABASE_PUBLISHABLE_KEY";
+const accountDialog = document.querySelector("#account-dialog");
+const accountForm = document.querySelector("#account-form");
+const accountStatus = document.querySelector("#account-status");
+const accountTitle = document.querySelector("#account-title");
+const accountDescription = document.querySelector("#account-description");
+const accountSubmit = document.querySelector("#account-submit");
+const accountPassword = document.querySelector("#account-password");
+const accountSwitch = document.querySelector("#account-switch");
+let authMode = "signup";
+let authClient = null;
+if (!SUPABASE_URL.startsWith("ADD_") && !SUPABASE_PUBLISHABLE_KEY.startsWith("ADD_")) {
+  authClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+}
+function setAuthMode(mode) {
+  authMode = mode;
+  const signingIn = mode === "signin";
+  accountTitle.textContent = signingIn ? "Sign in" : "Create your account";
+  accountDescription.textContent = signingIn ? "Sign in to your Smart Budget account." : "Sign up with your email to create an account.";
+  accountSubmit.textContent = signingIn ? "Sign in" : "Create account";
+  accountPassword.autocomplete = signingIn ? "current-password" : "new-password";
+  accountSwitch.textContent = signingIn ? "New here? Create an account" : "Already have an account? Sign in";
+  accountStatus.textContent = "";
+}
+document.querySelector("#account-open").addEventListener("click", async () => {
+  setAuthMode("signup");
+  if (authClient) {
+    const { data } = await authClient.auth.getUser();
+    if (data.user) accountStatus.textContent = "Signed in as " + data.user.email;
+  }
+  accountDialog.showModal();
+});
+document.querySelector("#account-cancel").addEventListener("click", () => accountDialog.close());
+accountSwitch.addEventListener("click", () => setAuthMode(authMode === "signup" ? "signin" : "signup"));
+accountForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (!authClient) {
+    accountStatus.textContent = "Account sign-in needs a Supabase project URL and publishable key before it can be enabled.";
+    return;
+  }
+  accountSubmit.disabled = true;
+  accountStatus.textContent = "Please wait…";
+  const email = document.querySelector("#account-email").value.trim();
+  const password = accountPassword.value;
+  const result = authMode === "signup"
+    ? await authClient.auth.signUp({ email, password, options: { emailRedirectTo: window.location.href } })
+    : await authClient.auth.signInWithPassword({ email, password });
+  accountSubmit.disabled = false;
+  accountStatus.textContent = result.error
+    ? result.error.message
+    : authMode === "signup"
+      ? "Account created. Check your email to confirm the address."
+      : "You are signed in as " + (result.data.user?.email || email) + ".";
+});
 </script>
 </body>
 </html>
