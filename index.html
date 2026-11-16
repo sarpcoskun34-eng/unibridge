@@ -3,10 +3,255 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UniBridge</title>
+  <meta name="theme-color" content="#f5f4ee">
+  <title>UniBridge — Your first 90 days, made clearer</title>
+  <style>
+    :root {
+      --ink: #172c28;
+      --muted: #66736d;
+      --paper: #f5f4ee;
+      --white: #fffefa;
+      --green: #d9f17d;
+      --green-dark: #385344;
+      --line: #e4e7dc;
+      --blue: #dfeaf2;
+      --coral: #f0a38a;
+      --shadow: 0 20px 60px rgba(30, 49, 41, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    button, a { font: inherit; }
+    a { color: inherit; }
+    .shell { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+    .topbar {
+      height: 76px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(23,44,40,.09);
+    }
+    .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 750; letter-spacing: -.04em; font-size: 21px; }
+    .brand-mark { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 10px 10px 10px 3px; background: var(--green); font-size: 16px; }
+    .nav { display: flex; align-items: center; gap: 28px; color: var(--muted); font-size: 13px; font-weight: 600; }
+    .nav a { text-decoration: none; }
+    .nav a:hover { color: var(--ink); }
+    .nav-cta { padding: 10px 15px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); background: var(--white); }
+    .hero { display: grid; grid-template-columns: 1.03fr .97fr; gap: 50px; align-items: center; padding: 66px 0 56px; }
+    .eyebrow { display: inline-flex; gap: 8px; align-items: center; text-transform: uppercase; letter-spacing: .12em; font-size: 10px; font-weight: 800; color: var(--green-dark); }
+    .eyebrow:before { content: ""; width: 18px; height: 2px; background: #98b540; }
+    h1 { max-width: 600px; margin: 18px 0 18px; font-size: clamp(42px, 6vw, 72px); line-height: .98; letter-spacing: -.07em; font-weight: 650; }
+    h1 span { color: #7a9340; }
+    .hero-copy { max-width: 490px; color: var(--muted); font-size: 16px; line-height: 1.75; }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 27px; }
+    .button { display: inline-flex; justify-content: center; align-items: center; gap: 9px; padding: 13px 18px; border: 0; border-radius: 999px; background: var(--ink); color: white; text-decoration: none; font-size: 13px; font-weight: 700; cursor: pointer; transition: transform .2s, background .2s; }
+    .button:hover { transform: translateY(-2px); background: #29483e; }
+    .button-secondary { color: var(--ink); background: transparent; }
+    .button-secondary:hover { color: var(--green-dark); background: transparent; }
+    .hero-note { margin-top: 17px; color: #818a82; font-size: 11px; }
+    .visual { position: relative; min-height: 390px; display: grid; place-items: center; }
+    .orbit { position: absolute; width: 360px; height: 360px; border: 1px solid #dbe2d2; border-radius: 50%; }
+    .orbit:before, .orbit:after { content: ""; position: absolute; border: 1px solid #e2e7da; border-radius: 50%; }
+    .orbit:before { inset: 30px; }
+    .orbit:after { inset: 61px; }
+    .map-card { position: relative; width: min(360px, 88%); padding: 24px; border: 1px solid rgba(23,44,40,.08); border-radius: 22px; background: var(--white); box-shadow: var(--shadow); transform: rotate(-2deg); }
+    .map-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .map-title { font-size: 13px; font-weight: 750; }
+    .live-pill { padding: 5px 9px; border-radius: 99px; background: #f0f5df; color: #577026; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+    .route { display: grid; grid-template-columns: 32px 1fr; gap: 12px; margin: 15px 0; }
+    .route-icon { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 10px; background: var(--blue); font-size: 14px; }
+    .route:nth-of-type(3) .route-icon { background: #eff1da; }
+    .route:nth-of-type(4) .route-icon { background: #f8e7de; }
+    .route strong { display: block; font-size: 12px; }
+    .route small { color: var(--muted); font-size: 10px; }
+    .route-line { height: 1px; margin: 14px 0 14px 42px; background: var(--line); }
+    .float-tag { position: absolute; padding: 11px 14px; border-radius: 14px; background: var(--green); box-shadow: 0 10px 26px rgba(30,49,41,.1); font-size: 11px; font-weight: 750; }
+    .float-tag.left { left: 0; top: 45px; transform: rotate(-7deg); }
+    .float-tag.right { right: 0; bottom: 47px; background: var(--blue); transform: rotate(5deg); }
+    .section { padding: 56px 0 74px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 25px; }
+    .section-kicker { color: #7a9340; font-size: 10px; text-transform: uppercase; letter-spacing: .13em; font-weight: 800; }
+    h2 { margin: 7px 0 0; font-size: clamp(28px, 4vw, 40px); line-height: 1.05; letter-spacing: -.055em; font-weight: 650; }
+    .section-intro { max-width: 390px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .workspace { display: grid; grid-template-columns: 1.35fr .65fr; gap: 18px; }
+    .panel { border: 1px solid var(--line); border-radius: 20px; background: var(--white); }
+    .checklist { padding: 23px 25px; }
+    .checklist-top { display: flex; justify-content: space-between; gap: 16px; align-items: start; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+    .checklist-top h3 { margin: 0 0 4px; font-size: 15px; letter-spacing: -.02em; }
+    .checklist-top p { margin: 0; color: var(--muted); font-size: 11px; }
+    .progress-number { min-width: 45px; text-align: right; font-size: 21px; font-weight: 700; letter-spacing: -.05em; }
+    .progress-number small { display: block; color: var(--muted); font-size: 9px; font-weight: 600; letter-spacing: 0; }
+    .progress-track { height: 5px; margin: 15px 0 19px; border-radius: 5px; background: #edf0e7; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; border-radius: inherit; background: #9bb944; transition: width .25s; }
+    .task { display: grid; grid-template-columns: 20px 1fr auto; gap: 12px; align-items: start; padding: 14px 0; border-bottom: 1px solid #eef0e9; cursor: pointer; }
+    .task:last-child { border-bottom: 0; }
+    .task input { position: absolute; opacity: 0; }
+    .check { width: 18px; height: 18px; margin-top: 1px; display: grid; place-items: center; border: 1px solid #cbd2c3; border-radius: 6px; color: transparent; font-size: 12px; transition: .2s; }
+    .task input:checked + .check { color: var(--ink); border-color: var(--green); background: var(--green); }
+    .task input:focus-visible + .check { outline: 3px solid #a8c95a; outline-offset: 2px; }
+    .task strong { display: block; font-size: 12px; font-weight: 700; }
+    .task small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .task.done strong { color: #879087; text-decoration: line-through; }
+    .task-time { padding-top: 2px; color: #859080; font-size: 9px; white-space: nowrap; }
+    .side-stack { display: grid; gap: 18px; align-content: start; }
+    .city-card { padding: 22px; overflow: hidden; background: var(--green); }
+    .city-card .section-kicker { color: #496126; }
+    .city-card h3 { margin: 9px 0 8px; font-size: 22px; letter-spacing: -.05em; }
+    .city-card p { max-width: 260px; margin: 0; color: #4c5c3d; font-size: 11px; line-height: 1.65; }
+    .city-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
+    .city-chips span { padding: 6px 9px; border: 1px solid rgba(31,53,33,.15); border-radius: 999px; font-size: 9px; font-weight: 700; }
+    .note-card { padding: 20px 22px; }
+    .note-icon { width: 28px; height: 28px; display: grid; place-items: center; margin-bottom: 11px; border-radius: 9px; background: var(--blue); }
+    .note-card h3 { margin: 0 0 7px; font-size: 14px; }
+    .note-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
+    .how-section { padding: 10px 0 75px; }
+    .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 25px; }
+    .step { min-height: 168px; padding: 21px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,254,250,.7); }
+    .step-num { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 9px; background: var(--green); font-size: 10px; font-weight: 800; }
+    .step h3 { margin: 20px 0 7px; font-size: 14px; }
+    .step p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
+    .footer { padding: 22px 0 30px; border-top: 1px solid rgba(23,44,40,.1); display: flex; justify-content: space-between; gap: 18px; color: var(--muted); font-size: 10px; }
+    .footer strong { color: var(--ink); }
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 32px, 560px); }
+      .topbar { height: 65px; }
+      .nav { gap: 15px; }
+      .nav a:not(.nav-cta) { display: none; }
+      .hero { grid-template-columns: 1fr; gap: 16px; padding: 48px 0 28px; }
+      .hero-copy { font-size: 14px; }
+      .visual { min-height: 345px; }
+      .orbit { width: 300px; height: 300px; }
+      .map-card { width: min(330px, 85%); }
+      .float-tag.left { left: 2px; }
+      .float-tag.right { right: 1px; bottom: 30px; }
+      .section { padding: 40px 0 55px; }
+      .section-head { display: block; }
+      .section-intro { margin-top: 12px; }
+      .workspace { grid-template-columns: 1fr; }
+      .checklist { padding: 18px; }
+      .steps { grid-template-columns: 1fr; }
+      .step { min-height: 0; }
+      .step h3 { margin-top: 13px; }
+      .footer { display: block; }
+      .footer span { display: block; margin-top: 5px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to UniBridge</h1>
-  <p>Your guide to starting university in Germany.</p>
+  <header class="shell topbar">
+    <a class="brand" href="#" aria-label="UniBridge home"><span class="brand-mark">↗</span>unibridge</a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#how-it-works">How it works</a>
+      <a href="#checklist">Your checklist</a>
+      <a class="nav-cta" href="#checklist">Explore the demo <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">A calmer start in Germany</div>
+        <h1>Your first 90 days, <span>made clearer.</span></h1>
+        <p class="hero-copy">Moving to a new country comes with a lot to figure out. UniBridge brings your first steps together, so you can focus on settling in and finding your place.</p>
+        <div class="hero-actions">
+          <a class="button" href="#checklist">See your first steps <span aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="#how-it-works">How UniBridge works <span aria-hidden="true">↓</span></a>
+        </div>
+        <p class="hero-note">A student-led concept, starting with a Bremen pilot.</p>
+      </div>
+      <div class="visual" aria-label="Illustration of a personalized student onboarding plan">
+        <div class="orbit"></div>
+        <div class="float-tag left">One step at a time ✳</div>
+        <div class="map-card">
+          <div class="map-head"><span class="map-title">Your first weeks</span><span class="live-pill">Bremen pilot</span></div>
+          <div class="route"><span class="route-icon">⌂</span><div><strong>Get settled</strong><small>Registration, housing and local essentials</small></div></div>
+          <div class="route-line"></div>
+          <div class="route"><span class="route-icon">＋</span><div><strong>Feel covered</strong><small>Health insurance and important documents</small></div></div>
+          <div class="route-line"></div>
+          <div class="route"><span class="route-icon">✳</span><div><strong>Find your rhythm</strong><small>University onboarding and student life</small></div></div>
+        </div>
+        <div class="float-tag right">Made for your next step ↗</div>
+      </div>
+    </section>
+
+    <section class="shell section" id="checklist">
+      <div class="section-head">
+        <div><div class="section-kicker">A starting point</div><h2>Your first steps, in one place.</h2></div>
+        <p class="section-intro">A sample checklist for students arriving in Bremen. Tick a task to track your progress on this device.</p>
+      </div>
+      <div class="workspace">
+        <div class="panel checklist">
+          <div class="checklist-top">
+            <div><h3>Your arrival checklist</h3><p>Example tasks for your first weeks in Bremen</p></div>
+            <div class="progress-number"><span id="progress-count">0/5</span><small>tasks done</small></div>
+          </div>
+          <div class="progress-track" role="progressbar" aria-label="Checklist progress" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><div class="progress-fill" id="progress-fill"></div></div>
+          <label class="task"><input type="checkbox" data-task="0"><span class="check" aria-hidden="true">✓</span><span><strong>Check your city registration requirements</strong><small>Find out which documents and appointment steps apply to you.</small></span><span class="task-time">First weeks</span></label>
+          <label class="task"><input type="checkbox" data-task="1"><span class="check" aria-hidden="true">✓</span><span><strong>Confirm your health insurance coverage</strong><small>Make sure your insurance status is clear for your studies.</small></span><span class="task-time">First weeks</span></label>
+          <label class="task"><input type="checkbox" data-task="2"><span class="check" aria-hidden="true">✓</span><span><strong>Complete your university onboarding</strong><small>Review the tasks and deadlines from your university.</small></span><span class="task-time">First month</span></label>
+          <label class="task"><input type="checkbox" data-task="3"><span class="check" aria-hidden="true">✓</span><span><strong>Collect your key documents</strong><small>Keep enrollment, insurance and registration records together.</small></span><span class="task-time">First month</span></label>
+          <label class="task"><input type="checkbox" data-task="4"><span class="check" aria-hidden="true">✓</span><span><strong>Explore student support and campus life</strong><small>Look for student services, clubs and activities that interest you.</small></span><span class="task-time">First 90 days</span></label>
+        </div>
+        <aside class="side-stack">
+          <div class="panel city-card">
+            <div class="section-kicker">Pilot city</div>
+            <h3>Hello, Bremen.</h3>
+            <p>UniBridge starts by exploring the needs of international students in Bremen, then can grow with what students tell us.</p>
+            <div class="city-chips"><span>City essentials</span><span>University steps</span><span>Student life</span></div>
+          </div>
+          <div class="panel note-card">
+            <div class="note-icon" aria-hidden="true">↗</div>
+            <h3>Guidance you can trust</h3>
+            <p>The concept is designed to connect students to verified official information, with steps tailored to their city and university.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="shell how-section" id="how-it-works">
+      <div class="section-kicker">Built around real student needs</div>
+      <h2>Less searching. More settling in.</h2>
+      <div class="steps">
+        <article class="step"><span class="step-num">01</span><h3>Tell us where you’re headed</h3><p>Choose your city and university to see the steps that may apply to your arrival.</p></article>
+        <article class="step"><span class="step-num">02</span><h3>Get a clear checklist</h3><p>See tasks, useful timing and links to reliable information in one organized place.</p></article>
+        <article class="step"><span class="step-num">03</span><h3>Move forward with confidence</h3><p>Track your progress and help improve the guide by sharing what students need most.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer"><strong>unibridge</strong><span>Making the first 90 days in Germany easier for international students.</span><span>Early concept · Bremen, Germany</span></footer>
+
+  <script>
+    const checkboxes = [...document.querySelectorAll("[data-task]")];
+    const progressCount = document.querySelector("#progress-count");
+    const progressFill = document.querySelector("#progress-fill");
+    const progressBar = document.querySelector('[role="progressbar"]');
+    const storageKey = "unibridge-checklist-v1";
+
+    function updateProgress() {
+      const completed = checkboxes.filter((checkbox) => checkbox.checked).length;
+      progressCount.textContent = completed + "/" + checkboxes.length;
+      progressFill.style.width = (completed / checkboxes.length * 100) + "%";
+      progressBar.setAttribute("aria-valuenow", completed);
+      checkboxes.forEach((checkbox) => checkbox.closest(".task").classList.toggle("done", checkbox.checked));
+      localStorage.setItem(storageKey, JSON.stringify(checkboxes.map((checkbox) => checkbox.checked)));
+    }
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+      checkboxes.forEach((checkbox, index) => { checkbox.checked = Boolean(saved[index]); });
+    } catch {
+      localStorage.removeItem(storageKey);
+    }
+    checkboxes.forEach((checkbox) => checkbox.addEventListener("change", updateProgress));
+    updateProgress();
+  </script>
 </body>
 </html>
