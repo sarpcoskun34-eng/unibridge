@@ -1,13 +1,13 @@
 {
   "id": "./",
-  "name": "Spendwise Budget",
-  "short_name": "Spendwise",
+  "name": "Smart Budget Budget",
+  "short_name": "Smart Budget",
   "description": "A simple, private monthly money dashboard.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f5f4ef",
-  "theme_color": "#152b25",
+  "background_color": "#ffffff",
+  "theme_color": "#8f1620",
   "icons": [
     { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
